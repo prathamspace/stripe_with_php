@@ -4,68 +4,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stripe Payment</title>
-    <script src="https://js.stripe.com/v3/"></script>
+    <title>Checkout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
+
+    <style>
+        .checkout {
+            height: 700px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .checkout form {
+            width: 400px;
+        }
+
+        .checkout h1 {
+            margin: 40px 0px;
+            font-weight: 700;
+        }
+    </style>
 </head>
 
 <body>
-    <form id="payment-form">
-        <!-- Your payment form fields, including card details -->
+    <div class="container">
 
-        <div id="card-element">
-            <!-- A Stripe Element will be inserted here. -->
+        <div class="checkout">
+
+            <h1>Checkout</h1>
+            <form action="payment.php" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Enter your Name</label>
+                    <input type="text" name="name" class="form-control">
+                    <div id="emailHelp" class="form-text">We'll never share your name with anyone else.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Email address</label>
+                    <input type="email" class="form-control" name="email" id="email">
+                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Phone No.</label>
+                    <input type="tel" name="tel" id="tel" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
-        <button id="payment-button" type="submit">Pay Now</button>
-    </form>
-    <script src="cred.js"> </script>
-    <script>
+    </div>
 
-        const public_key = getPublicKey();
-        const stripe = Stripe(public_key);
-
-        const elements = stripe.elements();
-
-        // Create a card Element
-        const cardElement = elements.create('card');
-
-        // Mount the card Element to the DOM
-        cardElement.mount('#card-element');
-
-        // Handle form submission
-        document.getElementById('payment-form').addEventListener('submit', async function (event) {
-            event.preventDefault();
-
-            // Call your backend to create a PaymentIntent and obtain the client secret
-            const response = await fetch('stripe.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    items: [{ name: 'Item 1', price: 500 }, { name: 'Item 2', price: 900 }]
-                })
-            });
-            const data = await response.json();
-
-            // Use the obtained client secret to confirm the payment
-            const { error } = await stripe.confirmCardPayment(data.clientSecret, {
-                payment_method: {
-                    card: cardElement,
-                    billing_details: {
-                        name: 'Customer Name'
-                    }
-                }
-            });
-
-            if (error) {
-                console.error('Payment failed:', error);
-            } else {
-                console.log('Payment succeeded!');
-                // Redirect to a success page or show a success message
-            }
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
